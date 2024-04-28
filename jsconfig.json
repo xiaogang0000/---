@@ -6,7 +6,7 @@
     "moduleResolution": "node",
     "paths": {
       "@/*": [
-        "src/*"
+        "备份/day_01/01_初始化项目/components/src/*"
       ]
     },
     "lib": [
