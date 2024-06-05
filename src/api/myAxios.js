@@ -2,6 +2,9 @@
 import axios from "axios"
 import nprogress from 'nprogress'
 import 'nprogress/nprogress.css'
+import {getUserTempId,readToken} from '@/utils/auth'
+import store from '@/store'
+
  /*  
      配置ajax请求：基本路径、超时时间。
      给ajax请求添加进度条效果。
@@ -20,6 +23,13 @@ const myAxios = axios.create({
 myAxios.interceptors.request.use((config)=>{
     //进度条开始
     nprogress.start()
+    //响应头中添加token
+    const token  = readToken()
+    if(token){
+        config.headers.token =  readToken()
+    }
+    //向请求投中发送uuid
+    config.headers.UserTempId= getUserTempId()
     return config
 })
 export default myAxios
@@ -30,6 +40,12 @@ myAxios.interceptors.response.use(
     response=>{ 
         //进度条停止
         nprogress.done()
+        //判断code是否为208,208意味着：token过期了
+        if(response.data.code === 208){
+            //token 已失效，强制退出登录
+store.dispatch('logout','身份已过期，请您重新登录')
+return new Promise(()=>{})
+        }
         //返回数据结果
        return response.data
     },

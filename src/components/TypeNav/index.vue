@@ -76,13 +76,16 @@ computed:{
             query:{
                keyword,
                 [ `category${level}Id`]:id,
-                     categoryName:innerText}
+                     categoryName:innerText
+                     }
                          })
+                         this.isShowSort = false
                }  
         },
         //鼠标移除导航区的回调
         excuteHidden(){
      if(this.$route.path !=='/home'){
+        //鼠标点击后隐藏导航窗口
          this.isShowSort = false
      }
         },

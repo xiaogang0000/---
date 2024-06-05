@@ -1,0 +1,1 @@
+export const goodsNumReg = /^([1-9]|[1-9]\d|1\d{2}|200)$/

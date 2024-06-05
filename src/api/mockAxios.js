@@ -2,6 +2,7 @@
 import axios from "axios"
 import nprogress from 'nprogress'
 import 'nprogress/nprogress.css'
+
  /*  
      配置ajax请求：基本路径、超时时间。
      给ajax请求添加进度条效果。
