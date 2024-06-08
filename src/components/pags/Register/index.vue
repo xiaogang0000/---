@@ -10,33 +10,35 @@
       </h3>
       <div class="content">
         <label>手机号:</label>
-        <input type="text" placeholder="请输入你的手机号" v-model="phone" />
-        <!-- <span class="error-msg">错误提示信息</span> -->
+        <input v-validate="'required|phone'"  name="手机" type="text" placeholder="请输入你的手机号" v-model="phone" />
+        <span class="error-msg">{{errors.first('手机')}}</span>
       </div>
       <div class="content">
         <label>验证码:</label>
-        <input type="text" placeholder="请输入验证码" v-model="code" />
+        <input  v-validate="'required|code'"  name="验证码" type="text" placeholder="请输入验证码" v-model="code" />
         <button class="getcode" @click="handleGetCode">获取验证码</button>
-        <!-- <span class="error-msg">错误提示信息</span> -->
+        <span class="error-msg">{{errors.first('验证码')}}</span>
       </div>
       <div class="content">
         <label>登录密码:</label>
         <input
+        v-validate="'required|pwd'" 
+        name="密码"
           type="text"
           placeholder="请输入你的登录密码"
           v-model="password"
         />
-        <!-- <span class="error-msg">错误提示信息</span> -->
+        <span class="error-msg">{{errors.first('密码')}}</span>
       </div>
       <div class="content">
         <label>确认密码:</label>
-        <input type="text" placeholder="请输入确认密码" v-model="re_password" />
-        <!-- <span class="error-msg">错误提示信息</span> -->
+        <input  v-validate="'required|ispwd'" name="密码"  type="text" placeholder="请输入确认密码" v-model="re_password" />
+        <span class="error-msg">{{errors.first('密码')}}</span>
       </div>
       <div class="controls">
-        <input name="m1" type="checkbox" v-model="agree" />
+        <input v-validate="'required|isagree'"  name="协议" type="checkbox" v-model="agree" />
         <span>同意协议并注册《尚品汇用户协议》</span>
-        <!-- <span class="error-msg">错误提示信息</span> -->
+        <span class="error-msg">{{errors.first('协议')}}</span>
       </div>
       <div class="btn">
         <button @click="handleRegister" >完成注册</button>
@@ -88,19 +90,19 @@ export default {
     },
   async   handleRegister(){
     //获取手机号验证码，密码，验证码
-    const { phone,password,code} = this
-    //发请求注册
- const result = await reqRegister({phone,password,code});
- 
-      if (result.code === 200) {
-        this.$message.success('注册成功');
-        this.$router.push('/login')
-        console.log(result)
-        this.code = result.data
-      } else {
-        this.$message.warning('注册失败')
-        console.log(result)
-      }
+//     const { phone,password,code} = this
+//     //发请求注册
+//  const result = await reqRegister({phone,password,code});
+ let validateResult = await this.$validator.validateAll()
+      // if (result.code === 200) {
+      //   this.$message.success('注册成功');
+      //   this.$router.push('/login')
+      //   console.log(result)
+      //   this.code = result.data
+      // } else {
+      //   this.$message.warning('注册失败')
+      //   console.log(result)
+      // }
     }
   },
 };

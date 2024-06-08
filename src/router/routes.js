@@ -1,7 +1,7 @@
 //路由规则
 import Home from "../components/pags/Home"
 import Login from "../components/pags/Login"
-import Register from "../components/pags/Register"
+// import Register from "../components/pags/Register"
 import Search from "../components/pags/Search"
 import Test from "../components/pags/Test"
 import Detail from '../components/pags/Detail'
@@ -9,6 +9,11 @@ import AddCartSuccess from '../components/pags/AddCartSuccess'
 import Cart from '../components/pags/Cart/Cart' 
 import Trade from  '../components/pags/Trade'
 import Pay from  '../components/pags/Pay'
+import PaySuccess from  '../components/pags/PaySuccess'
+import Center from  '../components/pags/Center'
+
+const Register = ()=> import ('../components/pags/Register')
+
 
 const routes = [
     {
@@ -57,6 +62,15 @@ const routes = [
       {
         path:'/pay',
         component:Pay,
+      },
+      
+      {
+        path:'/paysuccess',
+        component:PaySuccess,
+      },
+      {
+        path:'/center',
+        component:Center,
       },
       {
           path:'/',

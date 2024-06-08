@@ -6,12 +6,19 @@ import TypeNav from './components/TypeNav'
 import Pagination from './components/Pagination'
 import './mock/index'
 import { Button, Loading,MessageBox,Notification,Message} from 'element-ui';
-
+import './utils/validate'
+import VueLazyload from 'vue-lazyload'
+// import picture from './assets/images/loading.gif'
 
 Vue.config.productionTip = false
 Vue.component('TypeNav',TypeNav)
 Vue.component('Pagination',Pagination)
 Vue.component(Button.name, Button);
+
+
+Vue.use(VueLazyload,{
+    // loading:picture
+})
 
 //在vue的原型上添加所有提示类的组件
 Vue.prototype.$loading = Loading.service;

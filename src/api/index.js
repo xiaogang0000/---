@@ -61,3 +61,7 @@ export const reqTradeInfo = ()=>myAxios.get('/api/order/auth/trade')
 export const reqSubmitOrder = (tradeNo,paramsObj)=>myAxios.post(`/api/order/auth/submitOrder?tradeNo=${tradeNo}`,paramsObj)
 //请求支付信息
 export const reqPayInfo = (orderId)=>myAxios.get(`/api/payment/weixin/createNative/${orderId}`)
+//请求订单支付状态
+export const reqPayStatus = (orderId)=>myAxios.get(`/api/payment/weixin/queryPayStatus/${orderId}`)
+//
+export const reqMyOrderInfo = (pageNo,pageSize)=>myAxios.get(`/api/order/auth/${pageNo}/${pageSize}`)

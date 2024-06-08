@@ -73,9 +73,15 @@
 </template>
 
 <script>
-import { reqPayInfo } from "@/api";
+import { reqPayInfo,reqPayStatus } from "@/api";
+import QRCode from "qrcode";
 export default {
   name: "Pay",
+  data() {
+    return {
+      payInfo: {},
+    };
+  },
   methods: {
     async getPayInfo() {
       //获取路由传递过来的订单编号
@@ -83,18 +89,64 @@ export default {
       const result = await reqPayInfo(order_id);
       if (result.code === 200) {
         console.log(result);
+        this.payInfo = result.data;
       } else {
         this.$message.warning(result.message);
       }
     },
     //立即支付函数的回调
-    handlePay(){
-       this.$alert('<img src="https://www.baidu.com/link?url=ybiXLsY2x2Ld3zVC4R1TcvG97JrM4oAzqc6BQohE7Pacu7DuhGLGLKDfvtUqUGs27Pwd3YsEyZH0uuA27WHt2XzJVw_fvk3-0kAIB4s4Ga7ZFSuQnHKJMh-zySDQ6L422M392Y7AVsE0cqrPCD2QSSDj1hERSaxfQDd5r7HqnLK0ExUPylIp5fVqR8ipZy9PjLzkIICsBJm1B9wkYf0hz6C--qQEBzZPtP6O-ve7H1W_Q9xq62rb_1ZtJ1STIKlkNDc_2f61mAYN0UtdCDe4UhpN6x117xTKPTclk3TEEgF5r6lEuenr39wTU_ZAnb6T2H508BrTIKGaCH01qx9UynEiVt-MPmgxrrMQWMZtT0GaNMrKXn4So-P9XiLaNq23BgFLodFrHWj9s01ogautv4WnmwoJVVyreYnKW94a-KOaFFGZtccsZhPJfx6_0gQQ6zslljuDK_BA7IV15Maj6uO6mikc7W-z3b9mstaktvpOxln7KnTciv_6q50rXfr6EE7XY8jxpgtKwCWsuNMQVSiKEAhcD5L3GLvwTN1_bJNB736uAdWgR2PBWEOTIDL6GDyfcPBbRgTY7ZwpiN1Ii_sdqTJGlMwI8GDG_X8JUH-17lO3Cb7ZDNmUxjLbjuUA&wd=&eqid=dfc7258a02a555d30000000566568764"/>', '微信扫码支付', {
-          dangerouslyUseHTMLString: true
-        });
-    }
+    async handlePay() {
+      //弹窗的具体配置
+      try {
+        const url = await QRCode.toDataURL(this.payInfo.codeUrl);
+        const htmlStr = `<img src="${url}" style="width:200px" />`
+        const options = {
+          dangerouslyUseHTMLString: true,
+          center: true,
+          showClose: false,
+          showCancelButton: true,
+          cancelButtonText: "支付遇到问题",
+          confirmButtonText: "已完成支付",
+        }
+        this.$alert(htmlStr,'微信扫码支付',{
+          ...options,
+          callback:async (type)=>{
+            if(type === 'confirm'){
+               clearInterval(this.timer)
+               //再次向服务器发送请求，确认订单状态
+                 const result = await reqPayStatus(this.payInfo.orderId)
+                 if(result.code === 200){
+                  this.$router.push('/paysuccess')
+                 }else{
+                  //
+                  // this.$message.waring('您的订单并为支付成功，请重新支付！')
+                 }
+              console.log('你点了确定按钮')
+            }else{
+            clearInterval(this.timer)
+            //给一个小提示
+            this.$message.warning('支付遇到问题，致电客服解决')
+            }
+          }
+        })
+      //发起心跳请求
+ this.timer =    setInterval(async()=> {
+   const result = await reqPayStatus(this.payInfo.orderId)
+if(result.code === 200){
+  //关闭定时器
+  clearInterval(this.timer)
+  //关闭弹窗
+this.$msgbox.close()
+  //跳转到成功支付路由
+this.$router.push('/paysuccess')
+}
+      },2000)
+      } catch (error) {
+        this.$message.warning('支付二维码获取失败，请联系管理员')
+      }
+    },
   },
-  mounted(){
+  mounted() {
     this.getPayInfo();
   },
 };

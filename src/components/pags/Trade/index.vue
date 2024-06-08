@@ -138,7 +138,6 @@ export default {
       //发请求
       const result = await reqSubmitOrder(tradeNo, paramsObj);
       if (result.code === 200) {
-        console.log(result);
         this.$router.push({
           path:'/pay',
           query:{
